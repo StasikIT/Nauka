@@ -2,13 +2,11 @@ import tkinter as tk
 from tkinter import messagebox as mb
 import random
 
-# Глобальні змінні для зберігання даних користувача
 current_user = None
 current_balance = 0
 usd_balance = 0
 
 
-# Функція для оновлення курсу валют
 def update_rate():
     global usd_to_uah_rate, usd_to_cny_rate
     usd_to_uah_rate = random.uniform(26, 28)
@@ -16,12 +14,10 @@ def update_rate():
     root.title(f"Поточний курс: 1 Долар = {usd_to_uah_rate:.2f} гривень, 1 Долар = {usd_to_cny_rate:.2f} юанів")
 
 
-# Функція для поповнення балансу
 def refill():
     refill_window = tk.Toplevel(root)
     refill_window.title("Поповнення")
 
-    # GUI для поповнення балансу...
     amount_label = tk.Label(refill_window, text="Сума:")
     amount_label.grid(row=0, column=0, padx=5, pady=5)
 
@@ -39,13 +35,9 @@ def refill():
                                command=lambda: refill_confirm(amount_entry.get(), card_entry.get()))
     confirm_button.grid(row=2, columnspan=2, padx=5, pady=5)
 
-
-# Функція для перевірки введених символів (тільки цифри)
 def check_card_number(char):
     return char.isdigit() or char == ''
 
-
-# Функція для підтвердження поповнення
 def refill_confirm(amount, card_number):
     global current_balance
     try:
@@ -56,27 +48,20 @@ def refill_confirm(amount, card_number):
         if len(card_number) != 8:
             mb.showerror("Помилка", "Номер картки має містити 8 цифр")
             return
-        # Логіка для підтвердження поповнення...
         current_balance += amount
         mb.showinfo("Поповнення", f"Баланс поповнено на {amount} грн. Поточний баланс: {current_balance} грн.")
     except ValueError:
         mb.showerror("Помилка", "Неправильний формат введеної суми")
 
-
-# Функція для перевірки введених символів (тільки цифри та крапка)
 def check_input_char(char):
     return char.isdigit() or char == '.'
 
-
-# Функція для відображення/приховання пароля
 def show_password():
     if password_show_var.get():
         password_entry.config(show='')
     else:
         password_entry.config(show='*')
 
-
-# Функція для авторизації користувача
 def authorize():
     global current_user
     username = username_entry.get()
@@ -84,13 +69,12 @@ def authorize():
     if len(password) < 4 or len(password) > 8:
         show_error("Помилка", "Пароль має містити від 4 до 8 символів")
         return
-    current_user = username  # Зберігаємо дані користувача
-    root.deiconify()  # показати основне вікно
-    login_window.destroy()  # закрити вікно авторизації
+    current_user = username
+    root.deiconify()
+    login_window.destroy()
     update_rate()
 
 
-# Функція для перегляду паролю
 def view_password():
     password = password_entry.get()
     if password:
@@ -98,50 +82,41 @@ def view_password():
     else:
         show_error("Помилка", "Пароль не введено")
 
-
-# Функція для відображення повідомлення про помилку
 def show_error(title, message):
     mb.showerror(title, message)
 
 
-# Функція для відображення повідомлення про попередження
 def show_warning(title, message):
     mb.showwarning(title, message)
 
 
-# Функція для конвертації з USD в UAH
 def usd_to_uah(amount, rate):
     return amount * rate
 
 def uah_to_usd(amount, rate):
     return amount /rate
 
-# Функція для конвертації з USD в CNY
 def usd_to_cny(amount, rate):
     return amount * rate
 
 
-# Функція для переведення валюти
 def convert():
-    amount = entry_amount.get()  # Отримання введеної суми
+    amount = entry_amount.get()
     try:
-        amount = float(amount)  # Конвертація введеної суми в тип float
-        choice = option_menu_var.get()  # Отримання обраної опції з меню
+        amount = float(amount)
+        choice = option_menu_var.get()
         if choice == 'З Долара в Гривні':
-            converted_amount = usd_to_uah(amount, usd_to_uah_rate)  # Конвертація з USD в UAH
-            label_result.config(text=f"{amount} USD = {converted_amount:.2f} UAH")  # Вивід результату
+            converted_amount = usd_to_uah(amount, usd_to_uah_rate)
+            label_result.config(text=f"{amount} USD = {converted_amount:.2f} UAH")
         elif choice == 'З Гривні в Долар':
-            converted_amount = uah_to_usd(amount, usd_to_uah_rate)  # Конвертація з UAH в USD
-            label_result.config(text=f"{amount} UAH = {converted_amount:.2f} USD")  # Вивід результату
+            converted_amount = uah_to_usd(amount, usd_to_uah_rate)
+            label_result.config(text=f"{amount} UAH = {converted_amount:.2f} USD")
         elif choice == 'З Долара в Юани':
-            converted_amount = usd_to_cny(amount, usd_to_cny_rate)  # Конвертація з USD в CNY
-            label_result.config(text=f"{amount} USD = {converted_amount:.2f} CNY")  # Вивід результату
+            converted_amount = usd_to_cny(amount, usd_to_cny_rate)
+            label_result.config(text=f"{amount} USD = {converted_amount:.2f} CNY")
     except ValueError:
         label_result.config(
-            text="Будь ласка, введіть число")  # Вивід повідомлення про помилку, якщо введене значення не є числом
-
-
-# Функція для відображення кабінету користувача
+            text="Будь ласка, введіть число")
 def show_profile():
     if current_user:
         profile_window = tk.Toplevel(root)
@@ -156,8 +131,6 @@ def show_profile():
     else:
         mb.showerror("Помилка", "Ви не авторизовані")
 
-
-# Функція для купівлі доларів
 def buy_usd():
     global current_balance, usd_balance
     buy_usd_window = tk.Toplevel(root)
@@ -174,7 +147,6 @@ def buy_usd():
     confirm_button.grid(row=1, columnspan=2, padx=5, pady=5)
 
 
-# Функція для підтвердження купівлі доларів
 def buy_usd_confirm(amount):
     global current_balance, usd_balance
     try:
@@ -192,7 +164,6 @@ def buy_usd_confirm(amount):
         mb.showerror("Помилка", "Неправильний формат введеної суми")
 
 
-# Створення вікна авторизації
 login_window = tk.Tk()
 login_window.title("Авторизація")
 login_window.geometry("300x200")
@@ -216,7 +187,6 @@ password_show_checkbox.grid(row=2, columnspan=2, padx=5, pady=5)
 login_button = tk.Button(login_window, text="Увійти", command=authorize)
 login_button.grid(row=3, columnspan=2, padx=5, pady=5)
 
-# Створення основного вікна програми
 root = tk.Tk()
 root.title("Конвертер валют")
 root.withdraw()
